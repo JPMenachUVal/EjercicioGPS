@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">EjercicioGPS</string>
+    <string name="btn_habilitar">Este botón activa el GPS</string>
+
+    <!--Recursos útiles para la configuración de la ventana de diálogo-->
+    <string name="alert_dialog_title">¿Desea habilitar GPS?</string>
+    <string name="alert_dialog_description">Esta aplicación necesita el servicio GPS. Vaya a habilitarlo.</string>
+    <string name="alert_dialog_accept">Habiliar</string>
+    <string name="alert_dialog_deny">Ignorar</string>
+    <string name="btn_coordenadas">Obtener las coordenadas</string>
+    <string name="title_activity_maps">MapsActivity</string>
+
+</resources>
