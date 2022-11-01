@@ -1,7 +1,18 @@
 package com.example.ejerciciogps
 
+import android.graphics.Camera
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
+import com.example.ejerciciogps.Coordenadas.feria16Julio
+import com.example.ejerciciogps.Coordenadas.monticulo
+import com.example.ejerciciogps.Coordenadas.perez
+import com.example.ejerciciogps.Coordenadas.plazaAvaroa
+import com.example.ejerciciogps.Coordenadas.plazaMurillo
+import com.example.ejerciciogps.Coordenadas.plazaTriangular
+import com.example.ejerciciogps.Coordenadas.stadium
+import com.example.ejerciciogps.Coordenadas.torresMall
+import com.example.ejerciciogps.Coordenadas.univalle
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -10,6 +21,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.ejerciciogps.databinding.ActivityMapsBinding
+import com.google.android.gms.maps.model.CameraPosition
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -64,6 +78,67 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         A partir de 10: ciudades, países
         A partir de 20: Sirve para edificios, casas, parques, domicilios
         */
+
+        /**
+         * Configuración personalizada de cámara
+         * */
+        val camaraPersonalizada = CameraPosition.Builder()
+            .target(univalle)
+            .zoom(17f)
+            .tilt(45f) //Ángulo de inclinación de la cámara.
+            .bearing(245f) //Ángulo de orientación respecto al norte geográfico
+            .build()
+
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(camaraPersonalizada))
+
+        /**
+         * Movimiento de la cámara usando corrutinas (similares a hilos o procesos en background)
+         */
+       /*mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(univalle, 17f))
+        //uso de corrutinas......
+        lifecycleScope.launch {
+            delay(5000)
+            //animateCamewra: Transición de movimiento en el mapa
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(stadium,17f))
+
+
+            delay(5000)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(perez,17f))
+
+            delay(5000)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(torresMall,17f))
+
+            delay(5000)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(feria16Julio,17f))
+
+            delay(5000)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(plazaMurillo,17f))
+
+            delay(5000)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(plazaAvaroa,17f))
+
+            delay(5000)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(monticulo,17f))
+
+            delay(5000)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(plazaTriangular,17f))
+            mMap.addMarker(MarkerOptions()
+                .title("Plaza triangular")
+                .snippet("$plazaTriangular")//Contenido extra
+                .position(plazaTriangular)
+            )
+        }*/
+
+        /**
+         * Movimiento de la cámara por pixeles en pantalla
+         * */
+        lifecycleScope.launch{
+            delay(5000)
+            for(i in 0 .. 50) {
+                mMap.animateCamera(CameraUpdateFactory.scrollBy(0f,120f))
+                delay(500)
+            }
+        }
 
         //Los mapas tienen eventos, como los botones.
         // Se pueden configurar listeners para eventos.
