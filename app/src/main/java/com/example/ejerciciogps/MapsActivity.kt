@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.example.ejerciciogps.Coordenadas.feria16Julio
+import com.example.ejerciciogps.Coordenadas.hospitalObrero
+import com.example.ejerciciogps.Coordenadas.lapaz
 import com.example.ejerciciogps.Coordenadas.monticulo
 import com.example.ejerciciogps.Coordenadas.perez
 import com.example.ejerciciogps.Coordenadas.plazaAvaroa
@@ -22,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.ejerciciogps.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLngBounds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -79,10 +82,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         A partir de 20: Sirve para edificios, casas, parques, domicilios
         */
 
+
+        /**
+         * Delimitar el zoom permitido en el mapa
+         * */
+        mMap.apply {
+            setMinZoomPreference(15f)
+            setMaxZoomPreference(20f)
+        }
+
+
         /**
          * Configuración personalizada de cámara
          * */
-        val camaraPersonalizada = CameraPosition.Builder()
+        /*val camaraPersonalizada = CameraPosition.Builder()
             .target(univalle)
             .zoom(17f)
             .tilt(45f) //Ángulo de inclinación de la cámara.
@@ -90,6 +103,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .build()
 
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(camaraPersonalizada))
+        */
 
         /**
          * Movimiento de la cámara usando corrutinas (similares a hilos o procesos en background)
@@ -132,12 +146,37 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         /**
          * Movimiento de la cámara por pixeles en pantalla
          * */
-        lifecycleScope.launch{
+        /*lifecycleScope.launch{
             delay(5000)
             for(i in 0 .. 50) {
                 mMap.animateCamera(CameraUpdateFactory.scrollBy(0f,120f))
                 delay(500)
             }
+        }*/
+
+        /**
+         * Limitación del área de acción BOUNDS del mapa.
+         * */
+        ///Bounds utiliza una posición suroeste y otra noroeste para definir el área de acción:
+        val lapazBounds = LatLngBounds(torresMall, hospitalObrero)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lapaz,12f))
+        lifecycleScope.launch{
+            delay(3_500)
+            //Del área delimitada se puede acceder al punto central con center.
+            ///mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lapazBounds.center,18f))
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(lapazBounds,32))
+        }
+        mMap.setLatLngBoundsForCameraTarget(lapazBounds)
+
+        /**
+         * Establecer los controles de UI del mapa y los Gestures.
+         */
+        mMap.uiSettings.apply {
+            isZoomControlsEnabled = true //Botones + - (Zoom IN/OUT)
+            isCompassEnabled = true //Brújula
+            isMapToolbarEnabled = true //Habilita la opción de ruta o verlo en la aplicación de GoogleMaps
+            isRotateGesturesEnabled = false //Deshabilitar la rotación del mapa
+            isZoomGesturesEnabled = false //Deshabilitar el zoom con los dedos.
         }
 
         //Los mapas tienen eventos, como los botones.
