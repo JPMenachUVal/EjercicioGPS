@@ -40,6 +40,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        //Clave para hacer funcionar la funci+on de pixeles de botones.
+        Utils.binding = binding
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         //FRAGMENTOS: Lo más avanzado de diseño en layouts. || Los fragmentos son módulos de diseño reutilizable.
@@ -176,8 +178,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             isCompassEnabled = true //Brújula
             isMapToolbarEnabled = true //Habilita la opción de ruta o verlo en la aplicación de GoogleMaps
             isRotateGesturesEnabled = false //Deshabilitar la rotación del mapa
+            isTiltGesturesEnabled = false //Deshabilitar la opción de rotación de la cámara
             isZoomGesturesEnabled = false //Deshabilitar el zoom con los dedos.
         }
+
+        //Establecer padding al mapa
+        mMap.setPadding(0,0,0,Utils.dp(64)) //Densidad de pixeles en pantalla
 
         //Los mapas tienen eventos, como los botones.
         // Se pueden configurar listeners para eventos.

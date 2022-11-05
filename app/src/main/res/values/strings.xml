@@ -9,5 +9,11 @@
     <string name="alert_dialog_deny">Ignorar</string>
     <string name="btn_coordenadas">Obtener las coordenadas</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="btn_posicion">Habilitará mi ubicación</string>
+    <string name="btn_normal">Normal</string>
+    <string name="btn_hibrido">Híbrido</string>
+    <string name="btn_satelital">Satelital</string>
+    <string name="btn_terreno">Terreno</string>
+    <string name="btn_none">N/A</string>
 
 </resources>
