@@ -1,8 +1,11 @@
 package com.example.ejerciciogps
 
 import android.graphics.Camera
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.example.ejerciciogps.Coordenadas.feria16Julio
 import com.example.ejerciciogps.Coordenadas.hospitalObrero
@@ -25,7 +28,8 @@ import com.google.android.gms.maps.model.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+    GoogleMap.OnMarkerDragListener {
 
     //Objeto que contiene al mapa de Google y es una variable global de la clase
     private lateinit var mMap: GoogleMap
@@ -204,7 +208,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             rotation = 30f //Hacer que el marcador tenga rotación
             isFlat = true //Hacer que el marcador rote o no rote con el mapa
             setAnchor(0.5f, 0.5f) //Hacer que rote desde algún punto
+            isDraggable = true
         }
+
+        //Eventos en marcadores
+        mMap.setOnMarkerClickListener(this)
+        //Cuando la interfaz a implementar tiene muchos métodos es mejor con la forma clásica
+        mMap.setOnMarkerDragListener(this)
+
+        /**
+         * Trazado de líneas, áreas y círculos en mapa
+         * Trazar una línea entre dos puntos se llama Polyline
+         */
+        setupPolyline()
 
         //Los mapas tienen eventos, como los botones.
         // Se pueden configurar listeners para eventos.
@@ -223,6 +239,44 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))*/
     }
+
+    private fun setupPolyline() {
+        //Las líneas polyline dependen de una lista o array de coordenadas
+        val misRutas = mutableListOf(univalle, stadium, hospitalObrero)
+        //val misRutas = mutableListOf(univalle, stadium)
+        val polyline = mMap.addPolyline(PolylineOptions()
+            .color(Color.WHITE)
+            .width(10f)
+            .clickable(true)
+            .geodesic(true) //Curvatura respecto al largo de la tierra
+        )
+        //polyline.points = misRutas
+
+        //Trazar rutas en tiempo real simulando movimiento
+        //Se pueden usar hilos o corrutinas
+        lifecycleScope.launch{
+            val misRutasEnTiempoReal = mutableListOf<LatLng>()
+            for (punto in misRutas){
+                misRutasEnTiempoReal.add(punto)
+                polyline.points = misRutasEnTiempoReal
+                delay(2_000)
+            }
+        }
+        /*MI VERSIÓN INEFICIENTE*//*
+        lifecycleScope.launch{
+            delay(3_500)
+            polyline.points = misRutas
+            delay(3_500)
+            misRutas.add(hospitalObrero)
+            polyline.points = misRutas
+
+            delay(3_500)
+            misRutas.add(torresMall)
+            polyline.points = misRutas
+        }*/
+
+    }
+
     private fun setupToggleButtons() {
         binding.toggleGroup.addOnButtonCheckedListener {
                 group, checkedId, isChecked ->
@@ -236,5 +290,32 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
+    }
+
+    //Click al marcador
+    override fun onMarkerClick(marker: Marker): Boolean {
+        //marker es el marcador al que se está haciendo click
+        Toast.makeText(this, "${marker.position.latitude}, ${marker.position.longitude}", Toast.LENGTH_SHORT).show()
+        return false
+    }
+
+    override fun onMarkerDrag(marker: Marker) {
+        //Mientras se mueve el marcador
+        binding.toggleGroup.visibility = View.INVISIBLE //Botones invisibles
+        marker.alpha = 0.4f/*0.5f*/ //Transparencia del marcador
+    }
+
+    override fun onMarkerDragEnd(marker: Marker) {
+        binding.toggleGroup.visibility = View.VISIBLE
+        marker.alpha = 1.0f
+        //Vuelve a la normalidad al soltar marcador
+        //Los marcadores tienen una ventana de informaciones llamada info windows
+        marker.showInfoWindow()
+    }
+
+    override fun onMarkerDragStart(marker: Marker) {
+        //Ocultar infoWindow()
+        marker.hideInfoWindow()
+        //Al iniciar arrastre
     }
 }
