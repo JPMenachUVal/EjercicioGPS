@@ -1,5 +1,7 @@
 package com.example.ejerciciogps
 
+import android.app.WallpaperColors.fromBitmap
+import android.graphics.BitmapFactory
 import android.graphics.Camera
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +9,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import com.example.ejerciciogps.Coordenadas.cossmil
 import com.example.ejerciciogps.Coordenadas.feria16Julio
 import com.example.ejerciciogps.Coordenadas.hospitalObrero
 import com.example.ejerciciogps.Coordenadas.lapaz
@@ -203,8 +206,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         )
         univalleMarcador?.run {
             //setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))//Cambiar color marcador con opciones default
+
+
             //setIcon(BitmapDescriptorFactory.defaultMarker(161f))//Cambiar color marcador con color custom
-            setIcon(BitmapDescriptorFactory.fromResource(R.drawable.markercar))//Cambiar marcador con diseño personalizado
+            //setIcon(BitmapDescriptorFactory.fromResource(R.drawable.markercar))//Cambiar marcador con diseño personalizado
+
+            //Cambiar marcador por ícono de Bitmap:
+            Utils.getBitmapfromVector(this@MapsActivity, R.drawable.ic_baseline_house_64)?.let{
+                setIcon(BitmapDescriptorFactory.fromBitmap(it))
+            }
+
             rotation = 30f //Hacer que el marcador tenga rotación
             isFlat = true //Hacer que el marcador rote o no rote con el mapa
             setAnchor(0.5f, 0.5f) //Hacer que rote desde algún punto
@@ -220,7 +231,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
          * Trazado de líneas, áreas y círculos en mapa
          * Trazar una línea entre dos puntos se llama Polyline
          */
-        setupPolyline()
+        /*setupPolyline()
+        setupSecondPolyline()*/
+
+        /**
+         * Dibujo de áreas Polygon
+         */
+        setupPolygonArea()
 
         //Los mapas tienen eventos, como los botones.
         // Se pueden configurar listeners para eventos.
@@ -240,12 +257,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))*/
     }
 
+    private fun setupPolygonArea() {
+        val polygon = mMap.addPolygon(PolygonOptions()
+            .geodesic(true)
+            .clickable(true)
+            .fillColor(Color.WHITE) //Color de relleno de área
+            .strokeColor(Color.RED) //Color de los límites de la línea
+            .add(univalle, stadium, hospitalObrero) //Puntos límite
+    )
+    }
+
     private fun setupPolyline() {
         //Las líneas polyline dependen de una lista o array de coordenadas
         val misRutas = mutableListOf(univalle, stadium, hospitalObrero)
         //val misRutas = mutableListOf(univalle, stadium)
         val polyline = mMap.addPolyline(PolylineOptions()
-            .color(Color.WHITE)
+            .color(Color.RED)
             .width(10f)
             .clickable(true)
             .geodesic(true) //Curvatura respecto al largo de la tierra
@@ -262,6 +289,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 delay(2_000)
             }
         }
+        //Poner información o descripción en la línea
+        polyline.tag = "Ruta Univalle a Hospital Obrero"
+        //Configuración del estilo de las uniones entre las líneas
+        polyline.jointType = JointType.ROUND/*BEVEL*/
+        //polyline.width = 100f
+        //Como configurar el patrón de la forma de la línea
+        // 1) línea contínua
+        // 2) línea punteada
+        // 3) segmentos de línea
+        polyline.pattern = listOf(Dot(), Gap(32f), Dash(64f), Gap(32f))
         /*MI VERSIÓN INEFICIENTE*//*
         lifecycleScope.launch{
             delay(3_500)
@@ -274,7 +311,34 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             misRutas.add(torresMall)
             polyline.points = misRutas
         }*/
+    }
 
+    private fun setupSecondPolyline() {
+        val miRutaPersonalizada = mutableListOf(cossmil, torresMall)
+        val secondPolyline = mMap.addPolyline(PolylineOptions()
+            .color(Color.BLUE)
+            .width(15f)
+            .clickable(true)
+            .geodesic(true)
+            .jointType(JointType.ROUND)
+        )
+        secondPolyline.tag = "Mi ruta Cossmil a Torres Mall"
+        secondPolyline.points = miRutaPersonalizada
+        //Configurar un evento click sobre la línea
+        mMap.setOnPolylineClickListener {
+            Toast.makeText(this, "${it.tag}", Toast.LENGTH_SHORT).show()
+        }
+
+        //Configurar inicio y fin de la línea:
+        /*secondPolyline.startCap = RoundCap()
+        secondPolyline.endCap = SquareCap()*/
+        //Poner íconos de inicio y fin de la línea
+        Utils.getBitmapfromVector(this, R.drawable.ic_baseline_military_tech_32)?.let{
+            secondPolyline.startCap = CustomCap(BitmapDescriptorFactory.fromBitmap(it))
+        }
+        Utils.getBitmapfromVector(this, R.drawable.ic_baseline_local_mall_32)?.let{
+            secondPolyline.endCap = CustomCap(BitmapDescriptorFactory.fromBitmap(it))
+        }
     }
 
     private fun setupToggleButtons() {

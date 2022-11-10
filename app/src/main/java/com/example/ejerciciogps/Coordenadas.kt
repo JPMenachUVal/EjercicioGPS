@@ -14,4 +14,5 @@ object Coordenadas {
     val plazaTriangular = LatLng(-16.50427462218308, -68.12089031370444)
     val hospitalObrero = LatLng(-16.499276170864643, -68.11819323021481)
     val lapaz = LatLng(-16.48982933150521, -68.11897663106267)
+    val cossmil = LatLng(-16.505114823914912, -68.12027411556006)
 }

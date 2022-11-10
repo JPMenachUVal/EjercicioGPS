@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Alumno/AndroidStudioProjects/EjercicioGPS/app/src/main/res/drawable/ic_baseline_house_64.xml" value="0.2985" />
+        <entry key="..\:/Users/Alumno/AndroidStudioProjects/EjercicioGPS/app/src/main/res/drawable/ic_baseline_local_mall_32.xml" value="0.2985" />
+        <entry key="..\:/Users/Alumno/AndroidStudioProjects/EjercicioGPS/app/src/main/res/drawable/ic_baseline_military_tech_32.xml" value="0.2985" />
         <entry key="..\:/Users/Alumno/AndroidStudioProjects/EjercicioGPS/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
         <entry key="..\:/Users/Alumno/AndroidStudioProjects/EjercicioGPS/app/src/main/res/layout/activity_maps.xml" value="0.2746268656716418" />
         <entry key="..\:/Users/Alumno/AndroidStudioProjects/EjercicioGPS/app/src/main/res/layout/activity_persistencia.xml" value="0.358695652173913" />
