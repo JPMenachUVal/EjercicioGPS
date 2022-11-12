@@ -90,7 +90,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         A partir de 20: Sirve para edificios, casas, parques, domicilios
         */
 
-
         /**
          * Delimitar el zoom permitido en el mapa
          * */
@@ -200,10 +199,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         /**
          * Configuración y personalización de marcadores
          */
-        val univalleMarcador = mMap.addMarker(MarkerOptions()
-            .title("Mi universidad")
-            .position(univalle)
-        )
+            val univalleMarcador = mMap.addMarker(MarkerOptions()
+                .title("Mi universidad")
+                .position(univalle)
+            )
         univalleMarcador?.run {
             //setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))//Cambiar color marcador con opciones default
 
@@ -360,6 +359,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     override fun onMarkerClick(marker: Marker): Boolean {
         //marker es el marcador al que se está haciendo click
         Toast.makeText(this, "${marker.position.latitude}, ${marker.position.longitude}", Toast.LENGTH_SHORT).show()
+        /**LAYOUT INFLATER PARA MARCADOR CON IMAGEN*/
+        //mMap.setInfoWindowAdapter(CustomInfoWindowAdapter(layoutInflater, univalle))
+        mMap.setInfoWindowAdapter(CustomInfoWindowAdapter(layoutInflater, marker.position, marker.title.toString()))
         return false
     }
 
